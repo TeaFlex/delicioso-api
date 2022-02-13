@@ -5,8 +5,13 @@ name = "pypi"
 
 [packages]
 django = "*"
+python-dotenv = "*"
 
 [dev-packages]
+
+[scripts]
+serve = "python ./manage.py runserver"
+pyversion = "python --version"
 
 [requires]
 python_version = "3.7"
