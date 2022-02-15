@@ -10,3 +10,6 @@ def get_infos(req: HttpRequest):
         "version": os.getenv('API_VERSION')
     }
     return JsonResponse(infos)
+
+def get_home(req: HttpRequest):
+    return HttpResponse()
