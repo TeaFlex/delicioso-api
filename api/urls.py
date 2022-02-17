@@ -1,7 +1,6 @@
 from django.urls import path
-from . import routes
-from . import views
+from .views.misc.Misc import MiscView
 
 urlpatterns = [
-    path("infos/", views.get_infos),
+    path(MiscView.get_prefix(), MiscView.as_view()),
 ]
