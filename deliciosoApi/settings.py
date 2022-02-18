@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
+from json import loads
 from os import getenv
 from pathlib import Path
 
@@ -24,9 +25,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-em%$_pa=oo75&a#!bjtok@2#h0cmaex19#^y_t!cft6e(cgc6g'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = not bool(int(getenv("API_IS_PROD")))
 
 ALLOWED_HOSTS = []
+hosts = loads(getenv("API_ALLOWED"))
+ALLOWED_HOSTS.append(hosts)
 
 
 # Application definition
