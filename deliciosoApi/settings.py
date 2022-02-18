@@ -29,8 +29,7 @@ DEBUG = not bool(int(getenv("API_IS_PROD")))
 
 ALLOWED_HOSTS = []
 hosts = loads(getenv("API_ALLOWED"))
-ALLOWED_HOSTS.append(hosts)
-
+ALLOWED_HOSTS.extend(hosts)
 
 # Application definition
 
