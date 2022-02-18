@@ -1,6 +1,10 @@
-from django.urls import path
-from .views.misc.Misc import MiscView
+from django.urls import path, include
+from api.utils.urls_utils import include_url_file
 
 urlpatterns = [
-    path(MiscView.get_prefix(), MiscView.as_view()),
+    # Misc
+    path("", include_url_file('misc')),
+
+    # User
+    path("user/", include_url_file('user'))
 ]

@@ -1,12 +1,9 @@
 import os
-from sys import prefix
 from django.http import HttpResponse, JsonResponse, HttpRequest
 from ..Base import BaseView
 from subprocess import check_output
 
-class MiscView(BaseView):
-
-    _prefix = ""
+class InfoView(BaseView):
 
     def get(self, req: HttpRequest) -> HttpResponse:
         infos = {
