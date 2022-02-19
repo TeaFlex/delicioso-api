@@ -1,11 +1,11 @@
 import os
-from django.http import HttpResponse, JsonResponse, HttpRequest
-from ..Base import BaseView
+from django.http import HttpResponse, JsonResponse
+from rest_framework.views import APIView
 from subprocess import check_output
 
-class InfoView(BaseView):
+class InfoView(APIView):
 
-    def get(self, req: HttpRequest) -> HttpResponse:
+    def get(self) -> HttpResponse:
         infos = {
             "pid": os.getpid(),
             "uptime": check_output(["ps", "-o", "etime", "-p", str(os.getpid()), "--no-headers"]).decode("UTF-8").strip(),
