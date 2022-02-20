@@ -2,11 +2,14 @@ from django.urls import path, include
 from rest_framework import routers
 from api.views.Booking import BookingViewSet
 from api.views.DinnerTable import DinnerTableViewSet
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from api.views.User import UserViewSet
 
 router = routers.SimpleRouter()
 
 router.register('table', DinnerTableViewSet, basename='table')
 router.register('booking', BookingViewSet, basename='booking')
+router.register('user', UserViewSet, basename='user')
 
 urlpatterns = [
     # Misc
@@ -14,4 +17,8 @@ urlpatterns = [
 
     # Router
     path("", include(router.urls)),
+
+    # Auth JWT
+    path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]
