@@ -1,5 +1,5 @@
 from django.db import models
 
-class Dinner_table(models.Model):
+class DinnerTable(models.Model):
     seats = models.IntegerField()
     
