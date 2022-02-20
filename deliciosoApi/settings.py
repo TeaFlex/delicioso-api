@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-em%$_pa=oo75&a#!bjtok@2#h0cmaex19#^y_t!cft6e(cgc6g'
+SECRET_KEY = getenv("API_SECRET")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = not bool(int(getenv("API_IS_PROD")))
@@ -63,8 +63,8 @@ REST_FRAMEWORK = {
 }
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=200),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=int(getenv('ACCESS_TOKEN_LIFETIME'))),
+    'REFRESH_TOKEN_LIFETIME': timedelta(hours=int(getenv('REFRESH_TOKEN_LIFETIME'))),
 }
 
 ROOT_URLCONF = 'deliciosoApi.urls'
