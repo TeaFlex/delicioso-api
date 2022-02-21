@@ -1,3 +1,4 @@
+from pyexpat import model
 from rest_framework.serializers import ModelSerializer
 from django.contrib.auth.models import User
 
@@ -7,10 +8,13 @@ class UserSerializer(ModelSerializer):
         fields = [
             'id',
             'username',
-            'first_name',
-            'last_name',
-            'email',
-            'is_superuser',
-            'is_staff',
             'last_login',
+            'is_staff',
+        ]
+
+class AdminUserSerializer(ModelSerializer):
+    class Meta:
+        model = User
+        exclude = [
+            'password'
         ]
