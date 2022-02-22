@@ -4,7 +4,7 @@ from rest_framework.permissions import IsAdminUser
 class AdministrableViewSet(ModelViewSet):
     """
         A ModelViewSet that permits to unauthenticated users to read and admins to read and write by default.
-        You can edit the `admin_actions` attribute select other actions available only for admins.
+        You can edit the `admin_actions` attribute to select other actions available only for admins.
     """
 
     admin_actions = [
