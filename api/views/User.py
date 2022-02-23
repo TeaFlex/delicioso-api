@@ -1,10 +1,11 @@
 from rest_framework.request import Request
-from django.contrib.auth.models import User
 from rest_framework.permissions import IsAuthenticated
 
 from api.serializers.User import AdminUserSerializer, UserSerializer
 from api.views.utils.permissions import IsOwnerOrAdmin
 from api.views.utils.viewsets import AdministrableViewSet
+
+from django.contrib.auth.models import User
 
 class UserViewSet(AdministrableViewSet):
 
