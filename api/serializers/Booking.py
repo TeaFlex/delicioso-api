@@ -1,4 +1,6 @@
-from rest_framework.serializers import ModelSerializer
+from datetime import datetime, timezone
+from rest_framework.serializers import ModelSerializer, Serializer, ValidationError
+from rest_framework import serializers
 from api.serializers.DinnerTable import DinnerTableSerializer
 from api.serializers.User import UserSerializer
 from ..models import Booking
@@ -17,3 +19,23 @@ class BookingSerializer(ModelSerializer):
             'booked_table', 
             'booked_by'
         ]
+    
+    def validate_booked_for(self, value: datetime):
+        if(value < datetime.now(timezone.utc)):
+            raise ValidationError("Booking for a day in the past is impossible")
+        return value
+
+class BookingRequestSerializer(Serializer):
+    booked_for = serializers.DateTimeField()
+    booked_seats = serializers.IntegerField()
+
+    def validate_booked_seats(self, value: int):
+        if(value <= 0 or value > 15):
+            raise ValidationError("User can book for minimum 1 seat and maximum 15 seats.")
+        return value
+
+    def validate_booked_for(self, value: datetime):
+        if(value.date() < datetime.now(timezone.utc).date()):
+            raise ValidationError("Booking for a day in the past is impossible")
+        return value
+        
