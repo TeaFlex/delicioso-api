@@ -30,8 +30,7 @@ class Booking(models.Model):
     @classmethod
     def has_active_booking(cls, user_id: int) -> QuerySet:
         u = User.objects.get(pk=user_id)
-        b = cls.objects.filter(booked_by = u, booked_for__range = cls.get_day_range())
-        return b
+        return cls.objects.filter(booked_by = u, booked_for__range = cls.get_day_range())
 
     @classmethod
     def is_table_available(cls, table_id: int) -> bool:
