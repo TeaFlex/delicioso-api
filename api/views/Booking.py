@@ -1,12 +1,14 @@
-from datetime import datetime
-from ..serializers.Booking import BookingSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.request import Request
 from rest_framework.decorators import action
-from ..models import Booking, DinnerTable
-from django.contrib.auth.models import User
+from rest_framework.exceptions import ValidationError
+
+from ..serializers.Booking import BookingSerializer, BookingRequestSerializer
+from ..models import Booking
 from .utils.viewsets import AdministrableViewSet
+
+from django.contrib.auth.models import User
 
 
 class BookingViewSet(AdministrableViewSet):
@@ -24,24 +26,45 @@ class BookingViewSet(AdministrableViewSet):
 
     @action(detail=False, methods=['post'], name="Book")
     def book(self, req: Request, *args, **kwargs) -> Response:
-        t = [ 
-            DinnerTable.objects.get(pk=2),
-            DinnerTable.objects.get(pk=3),
-        ]
-        # TODO: parse body to get booked tables, test if tables are availables and chang datetime.now()
+
+        rs = BookingRequestSerializer(data=req.data)
+
+        # Request structure validation
+        if(not rs.is_valid()):
+            raise ValidationError(rs.errors)
+        
+        if(Booking.has_active_booking(req.user.id)):
+            raise ValidationError(f"User {req.user.id} ({req.user.username}) has already booked one or more tables for today")
+        
+        tables = Booking.get_available_tables().order_by('seats').reverse()
+        seats = rs.validated_data['booked_seats']
+        choosen_t = []
+
+        if(tables.count() == 0):
+            raise ValidationError(f"There's not table available anymore for today")
+
+        for t in tables:
+            seats -= t.seats
+            choosen_t.append(t)
+            if(seats <= 0):
+                break
+        
+        if(seats > 0):
+            raise ValidationError(f"Not enough tables for {rs.validated_data['booked_seats']} persons")
+
         b = Booking(
-            booked_for = datetime.now(),
-            booked_by = User.objects.get(pk=req.user.id)
+            booked_for = rs.validated_data['booked_for'],
+            booked_by = req.user
         )
         b.save()
-        b.booked_table.add(*t)
+        b.booked_table.add(*choosen_t)
         return Response(status=201)
 
     @action(detail=False, methods=['delete'], name="Cancel booking")
     def cancel(self, req: Request, *args, **kwargs) -> Response:
         return Response(status=401)
     
-    @action(detail=False, methods=['put'], name="change booking")
+    @action(detail=False, methods=['put'], name="Change booking")
     def change(self, req: Request, *args, **kwargs) -> Response:
         return Response(status=401)
 
