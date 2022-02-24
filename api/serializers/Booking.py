@@ -17,7 +17,8 @@ class BookingSerializer(ModelSerializer):
             'booked_at', 
             'booked_for', 
             'booked_table', 
-            'booked_by'
+            'booked_by',
+            'booked_seats',
         ]
     
     def validate_booked_for(self, value: datetime):
@@ -30,8 +31,10 @@ class BookingRequestSerializer(Serializer):
     booked_seats = serializers.IntegerField()
 
     def validate_booked_seats(self, value: int):
-        if(value <= 0 or value > 15):
-            raise ValidationError("User can book for minimum 1 seat and maximum 15 seats.")
+        max = 16
+        min = 1
+        if(value < min or value > max):
+            raise ValidationError(f"User can book for minimum {min} seat and maximum {max} seats")
         return value
 
     def validate_booked_for(self, value: datetime):

@@ -5,7 +5,7 @@ from api.views.DinnerTable import DinnerTableViewSet
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from api.views.User import UserViewSet
 
-router = routers.SimpleRouter()
+router = routers.SimpleRouter(trailing_slash=False)
 
 router.register('table', DinnerTableViewSet, basename='table')
 router.register('booking', BookingViewSet, basename='booking')

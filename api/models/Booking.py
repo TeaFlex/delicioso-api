@@ -10,6 +10,15 @@ class Booking(models.Model):
     booked_for = models.DateTimeField()
     booked_table = models.ManyToManyField(DinnerTable)
     booked_by = models.ForeignKey(User, on_delete=models.CASCADE)
+    booked_seats = models.IntegerField()
+
+    @classmethod
+    def get_active_bookings(cls):
+        return cls.objects.filter(booked_for__range = cls.get_day_range())
+
+    @classmethod
+    def get_old_bookings(cls):
+        return cls.objects.filter(booked_for__lte = cls.get_day_range()[0])
 
     @classmethod
     def get_day_range(cls):

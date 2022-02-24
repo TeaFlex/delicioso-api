@@ -7,6 +7,8 @@ class DinnerTableSerializer(ModelSerializer):
         fields = ['id', 'seats']
 
     def validate_seats(self, value: int):
-        if(value <= 0):
-            raise ValidationError("Table must have at least 1 seat")
+        if(value < 2):
+            raise ValidationError("Table must have at least 2 seat")
+        if(value % 2 != 0):
+            raise ValidationError("Table must have a pair number of seats")
         return value
