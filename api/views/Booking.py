@@ -9,8 +9,6 @@ from ..serializers.Booking import BookingSerializer, BookingRequestSerializer
 from ..models import Booking
 from .utils.viewsets import AdministrableViewSet
 
-from django.contrib.auth.models import User
-
 
 class BookingViewSet(AdministrableViewSet):
 
