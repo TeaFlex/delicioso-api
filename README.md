@@ -2,13 +2,17 @@
 REST API project to practice the django framwork.
 
 ## Installation
-```
+```sh
+# Install the packages
 pipenv install
+
+# Create the admin user
+pipenv run set_admin
 ```
 
 ## Docker image
 
-You can build a Docker image from the Dockerfile by followinf these steps:
+You can build a Docker image from the Dockerfile by following these steps:
 - Copy the `dev.env` file to `.env`:
     ```
     cp ./dev.env ./.env
@@ -19,6 +23,8 @@ You can build a Docker image from the Dockerfile by followinf these steps:
     ```
     docker build -t delicioso .
     ```
+
+>Note: The created image contains the project in PRODUCTION mode.
 
 ## Database
 To make the database configuration easier, create a docker container as such:
