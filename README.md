@@ -17,7 +17,7 @@ You can build a Docker image from the Dockerfile by following these steps:
     ```
     cp ./dev.env ./.env
     ```
-- Change the values inside the `.env` file to match your needs.
+- Edit the values inside the `.env` file to match your needs.
 - Change the exposed port in the Docker file (default: 8000).
 - Build your image:
     ```
