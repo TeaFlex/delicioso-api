@@ -11,7 +11,6 @@ COPY . /delicioso
 WORKDIR /delicioso
 RUN rm -rf dev.env Dockerfile
 RUN pipenv install
-RUN pipenv run set_admin
 RUN pipenv run set_static
 
 EXPOSE 8000 80
