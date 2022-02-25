@@ -33,6 +33,28 @@ class BookingViewSet(AdministrableViewSet):
                 break
         return choosen_t, seats
 
+    def check_tables(self, data: list):
+        # TODO: improving seats calculator
+        tables = Booking.get_available_tables().order_by('seats').reverse()
+        seats = data['booked_seats']
+
+        # 2n seats for a table
+        if(seats % 2 != 0):
+            seats += 1
+
+        if(tables.count() == 0):
+            raise exceptions.NotFound(f"There's not table available anymore for today")
+
+        result = self.choose_tables(tables, seats)
+
+        if(result[1] > 0):
+            result = self.choose_tables(tables.reverse(), seats)
+        
+        if(result[1] > 0):
+            raise exceptions.NotFound(f"Not enough tables for {data['booked_seats']} persons")
+        
+        return result
+
     @action(detail=False, methods=['get'], name="Book")
     def active(self, req: Request, *args, **kwargs) -> Response:
         b = Booking.get_active_bookings().filter(booked_by = req.user.id)
@@ -52,24 +74,7 @@ class BookingViewSet(AdministrableViewSet):
         if(Booking.has_active_booking(req.user.id)):
             raise exceptions.PermissionDenied(f"User {req.user.id} ({req.user.username}) has already booked one or more tables for today")
         
-        # TODO: improving seats calculator
-        tables = Booking.get_available_tables().order_by('seats').reverse()
-        seats = rs.validated_data['booked_seats']
-
-        # 2n seats for a table
-        if(seats % 2 != 0):
-            seats += 1
-
-        if(tables.count() == 0):
-            raise exceptions.NotFound(f"There's not table available anymore for today")
-
-        result = self.choose_tables(tables, seats)
-
-        if(result[1] > 0):
-            result = self.choose_tables(tables.reverse(), seats)
-        
-        if(result[1] > 0):
-            raise exceptions.NotFound(f"Not enough tables for {rs.validated_data['booked_seats']} persons")
+        result = self.check_tables(rs.validated_data)
 
         b = Booking(
             booked_for = rs.validated_data['booked_for'],
@@ -94,7 +99,28 @@ class BookingViewSet(AdministrableViewSet):
     
     @action(detail=True, methods=['put'], name="Change booking")
     def change(self, req: Request, pk: int = None, *args, **kwargs) -> Response:
-        return Response(status=401)
+        rs = BookingRequestSerializer(data=req.data)
+
+        # Request structure validation
+        if(not rs.is_valid()):
+            raise exceptions.ValidationError(rs.errors)
+        
+        b = Booking.objects.filter(id=pk)
+        if(not b.exists()):
+            raise exceptions.NotFound(f"Booking {pk} does not exist")
+        if(b.first().booked_by.id != req.user.id):
+            raise exceptions.PermissionDenied(f"This booking is not from user {req.user.id}")
+        if(Booking.get_old_bookings().filter(id=pk).exists()):
+            raise exceptions.PermissionDenied("Modify an old booking is impossible")
+        
+        b = b.first()
+        result = self.check_tables(rs.validated_data)
+        b.booked_seats = rs.validated_data["booked_seats"]
+        b.booked_for = rs.validated_data["booked_for"]
+        b.save()
+        b.booked_table.clear()
+        b.booked_table.add(*result[0])
+        return Response(status=200)
 
     @action(detail=False, methods=['get'], name="Get count")
     def count(self, req: Request, *args, **kwargs) -> Response:
