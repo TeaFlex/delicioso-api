@@ -9,6 +9,7 @@ def main():
     """Run administrative tasks."""
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'deliciosoApi.settings')
     try:
+        load_dotenv(".env")
         os.environ["API_IS_PROD"] = "1"        
         if(not Path(".env").is_file()):
             load_dotenv("dev.env")
@@ -16,7 +17,7 @@ def main():
         from django.core.management import execute_from_command_line, commands
         from django.core.management.commands.runserver import Command as runserver
         runserver.default_port = os.getenv('API_PORT')
-        if(bool(os.getenv("API_IS_PROD"))):
+        if(bool(int(os.getenv("API_IS_PROD")))):
             runserver.default_addr = "0.0.0.0"
     except ImportError as exc:
         raise ImportError(

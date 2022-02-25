@@ -16,6 +16,8 @@ djangorestframework-simplejwt = "*"
 
 [scripts]
 serve = "python ./manage.py runserver"
+set_admin = "python ./manage.py set_admin"
+set_static = "python ./manage.py collectstatic"
 pyversion = "python --version"
 
 [requires]
