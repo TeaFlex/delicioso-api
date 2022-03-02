@@ -1,5 +1,6 @@
 from django.urls import path, include
 from rest_framework import routers
+from api.views.Auth import AuthView
 from api.views.Booking import BookingViewSet
 from api.views.DinnerTable import DinnerTableViewSet
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
@@ -19,6 +20,6 @@ urlpatterns = [
     path("", include(router.urls)),
 
     # Auth JWT
-    path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('token/', AuthView.as_view(), name='token_obtain_pair'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]
