@@ -18,8 +18,8 @@ class BookingViewSet(AdministrableViewSet):
 
     def get_queryset(self):
         # Non staff users only gets their bookings
-        if(self.request.user.is_staff):
-            return super().get_queryset()
+        # if(self.request.user.is_staff):
+        #     return super().get_queryset()
         queryset = Booking.objects.filter(booked_by_id=self.request.user.id)
         return queryset
     

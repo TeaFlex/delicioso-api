@@ -1,4 +1,5 @@
 from datetime import datetime, timezone
+from django.utils import timezone as tz
 from rest_framework.serializers import ModelSerializer, Serializer, ValidationError
 from rest_framework import serializers
 from api.serializers.DinnerTable import DinnerTableSerializer
@@ -38,7 +39,10 @@ class BookingRequestSerializer(Serializer):
         return value
 
     def validate_booked_for(self, value: datetime):
-        if(value.date() < datetime.now(timezone.utc).date()):
+        today = tz.now().date()
+        if(value.date() < today):
             raise ValidationError("Booking for a day in the past is impossible")
+        if(value.date() > today):
+            raise ValidationError(f"Booking is only possible for today ({today}).")
         return value
         
