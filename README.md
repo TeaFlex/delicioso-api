@@ -1,5 +1,6 @@
 # Delicioso-api
-REST API project to practice the django framwork.
+REST API project to practice the django framework.
+Client app: [delicioso-client](https://github.com/TeaFlex/delicioso-client).
 
 ## Installation
 ```sh
